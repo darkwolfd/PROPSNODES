@@ -189,10 +189,8 @@ p.desc{
 </head>
 <body>
 
-<video class="bg" autoplay muted loop playsinline poster="">
-  <!-- Keep your original source; fall back gracefully if it doesn't load -->
+<video class="bg" autoplay muted loop playsinline>
   <source src="https://cdn.discordapp.com/attachments/1430506426639585300/1433373590975152128/From_KlickPin_CF__Pinterest___.mp4" type="video/mp4">
-  <!-- If the remote video URL fails to load in some environments, the page still works -->
 </video>
 <div class="overlay"></div>
 
@@ -211,7 +209,7 @@ p.desc{
   <h1 class="glow">Props Nodes</h1>
   <p class="desc">Props Nodes is a premium hosting platform for your Minecraft servers — affordable, fast, and reliable.</p>
   <a href="https://discord.gg/RUeaAYufXg" target="_blank" class="discord-btn" rel="noopener">
-    <div class="discord-logo" aria-hidden="true"></div> Join our Discord
+    <div class="discord-logo"></div> Join our Discord
   </a>
 </section>
 
@@ -232,11 +230,11 @@ p.desc{
 </section>
 
 <!-- LOGIN -->
-<div class="popup" id="loginPopup" aria-hidden="true">
-  <div class="popup-content" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
-    <h2 id="loginTitle" style="font-family:'Minecraft',sans-serif;">Login</h2>
-    <input id="loginEmail" type="text" placeholder="Gmail" autocomplete="username">
-    <input id="loginPass" type="password" placeholder="Password" autocomplete="current-password">
+<div class="popup" id="loginPopup">
+  <div class="popup-content">
+    <h2 style="font-family:'Minecraft',sans-serif;">Login</h2>
+    <input id="loginEmail" type="text" placeholder="Gmail">
+    <input id="loginPass" type="password" placeholder="Password">
     <p id="message"></p>
     <button onclick="login()">Login</button><br><br>
     <button onclick="closePopup('loginPopup')">Close</button>
@@ -244,12 +242,12 @@ p.desc{
 </div>
 
 <!-- REGISTER -->
-<div class="popup" id="registerPopup" aria-hidden="true">
-  <div class="popup-content" role="dialog" aria-modal="true" aria-labelledby="regTitle">
-    <h2 id="regTitle" style="font-family:'Minecraft',sans-serif;">Register</h2>
-    <input id="regEmail" type="text" placeholder="Gmail" autocomplete="email">
-    <input id="regPass" type="password" placeholder="Password (7–20 chars)" autocomplete="new-password">
-    <input id="regUser" type="text" placeholder="Username" autocomplete="name">
+<div class="popup" id="registerPopup">
+  <div class="popup-content">
+    <h2 style="font-family:'Minecraft',sans-serif;">Register</h2>
+    <input id="regEmail" type="text" placeholder="Gmail">
+    <input id="regPass" type="password" placeholder="Password (7–20 chars)">
+    <input id="regUser" type="text" placeholder="Username">
     <p id="regMessage"></p>
     <button onclick="register()">Register</button><br><br>
     <button onclick="closePopup('registerPopup')">Close</button>
@@ -257,150 +255,27 @@ p.desc{
 </div>
 
 <script>
-/*
-  Fixes and improvements:
-  - Use document.getElementById(...) to reliably read inputs.
-  - Validate email format, password length, and username presence.
-  - Store users in localStorage keyed by email.
-  - Provide a simple login session stored in localStorage (currentUser).
-  - Update header when logged in, allow logout.
-  - Close popups when clicking outside the dialog.
-*/
-
-function openPopup(id){
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.style.display = 'flex';
-  el.setAttribute('aria-hidden', 'false');
-}
-function closePopup(id){
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.style.display = 'none';
-  el.setAttribute('aria-hidden', 'true');
-  // clear messages inside popup
-  const msg = el.querySelector('p');
-  if (msg) { msg.textContent = ''; msg.style.color = '#ff7a7a'; }
-}
-
-// switch sections
-function showSection(s){
-  document.getElementById('home').style.display = s==='home'?'block':'none';
-  document.getElementById('shop').style.display = s==='shop'?'block':'none';
-}
-
-// small email validator
-function isValidEmail(email){
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
+function openPopup(id){document.getElementById(id).style.display='flex';}
+function closePopup(id){document.getElementById(id).style.display='none';}
+function showSection(s){document.getElementById('home').style.display=s==='home'?'block':'none';document.getElementById('shop').style.display=s==='shop'?'block':'none';}
 
 function register(){
-  const e = document.getElementById('regEmail').value.trim();
-  const p = document.getElementById('regPass').value;
-  const u = document.getElementById('regUser').value.trim();
-  const regMessage = document.getElementById('regMessage');
-
-  regMessage.style.color = '#ff7a7a';
-  if(!e || !p || !u){ regMessage.textContent = 'Please fill all fields.'; return; }
-  if(!isValidEmail(e)){ regMessage.textContent = 'Please enter a valid email.'; return; }
-  if(p.length < 7 || p.length > 20){ regMessage.textContent = 'Weak Pass — use 7–20 chars.'; return; }
-
-  const users = JSON.parse(localStorage.getItem('users') || '{}');
-  if(users[e]){ regMessage.textContent = 'Account exists. Please login.'; return; }
-
-  users[e] = { password: p, username: u };
-  localStorage.setItem('users', JSON.stringify(users));
-
-  regMessage.style.color = '#00ff80';
-  regMessage.textContent = 'Registered! You can login.';
-  // auto-close after a short delay
-  setTimeout(()=>{ closePopup('registerPopup'); }, 1200);
+  const e=regEmail.value.trim(),p=regPass.value,u=regUser.value.trim();
+  if(p.length<7||p.length>20){regMessage.textContent="Weak Pass — use 7–20 chars.";return;}
+  const users=JSON.parse(localStorage.getItem('users')||'{}');
+  if(users[e]){regMessage.textContent="Account exists. Please login.";return;}
+  users[e]={password:p,username:u};
+  localStorage.setItem('users',JSON.stringify(users));
+  regMessage.style.color="#00ff80";regMessage.textContent="Registered! You can login.";
 }
-
 function login(){
-  const e = document.getElementById('loginEmail').value.trim();
-  const p = document.getElementById('loginPass').value;
-  const message = document.getElementById('message');
-
-  message.style.color = '#ff7a7a';
-  if(!e || !p){ message.textContent = 'Please enter email and password.'; return; }
-  if(!isValidEmail(e)){ message.textContent = 'Please enter a valid email.'; return; }
-
-  const users = JSON.parse(localStorage.getItem('users') || '{}');
-  if(!users[e]){ message.textContent = "This Account Doesn't Exist, Please register."; return; }
-  if(users[e].password !== p){ message.textContent = "Wrong credentials, Please enter right."; return; }
-
-  // success: set current user
-  localStorage.setItem('currentUser', JSON.stringify({ email: e, username: users[e].username }));
-  message.style.color = '#00ff80';
-  message.textContent = 'Login successful!';
-  updateHeaderForLoggedInUser();
-  setTimeout(()=>{ closePopup('loginPopup'); }, 600);
+  const e=loginEmail.value.trim(),p=loginPass.value;
+  const users=JSON.parse(localStorage.getItem('users')||'{}');
+  if(!users[e]){message.textContent="This Account Doesn't Exist, Please register.";return;}
+  if(users[e].password!==p){message.textContent="Wrong credentials, Please enter right.";return;}
+  alert(`Welcome ${users[e].username}!`);
+  closePopup('loginPopup');
 }
-
-function logout(){
-  localStorage.removeItem('currentUser');
-  updateHeaderForLoggedOut();
-}
-
-function updateHeaderForLoggedInUser(){
-  const top = document.getElementById('topButtons');
-  const current = JSON.parse(localStorage.getItem('currentUser') || 'null');
-  if(!current){
-    updateHeaderForLoggedOut();
-    return;
-  }
-  top.innerHTML = `
-    <div class="user-badge" title="${current.email}">
-      <strong style="color:var(--accent);font-family:'Minecraft',sans-serif;">${escapeHtml(current.username)}</strong>
-      <button class="logout-btn" onclick="logout()">Logout</button>
-    </div>
-  `;
-}
-
-function updateHeaderForLoggedOut(){
-  const top = document.getElementById('topButtons');
-  top.innerHTML = `
-    <button onclick="openPopup('loginPopup')">Login</button>
-    <button onclick="openPopup('registerPopup')">Register</button>
-  `;
-}
-
-// small HTML escaper for display safety
-function escapeHtml(s){
-  return String(s).replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; });
-}
-
-// close popup when clicking outside content
-document.addEventListener('click', function(evt){
-  const popups = document.querySelectorAll('.popup');
-  popups.forEach(p => {
-    if(p.style.display !== 'flex') return;
-    const content = p.querySelector('.popup-content');
-    if(!content) return;
-    if(!content.contains(evt.target) && p === evt.target){
-      closePopup(p.id);
-    }
-  });
-});
-
-// Keyboard accessibility: Esc to close any open popup
-document.addEventListener('keydown', function(e){
-  if(e.key === 'Escape'){
-    document.querySelectorAll('.popup').forEach(p => {
-      if(p.style.display === 'flex') closePopup(p.id);
-    });
-  }
-});
-
-// On load: set header based on session
-document.addEventListener('DOMContentLoaded', function(){
-  if(localStorage.getItem('currentUser')){
-    updateHeaderForLoggedInUser();
-  } else {
-    updateHeaderForLoggedOut();
-  }
-});
 </script>
 </body>
 </html>
