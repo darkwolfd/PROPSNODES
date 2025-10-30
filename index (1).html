@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Props Nodes</title>
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/minecraft-4" rel="stylesheet">
+
+<style>
+:root{
+  --accent:#00ff7f;
+  --yellow:#ffeb3b;
+  --text:#eaf7ff;
+  font-family:'Poppins',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  overflow-x:hidden;
+  color:var(--text);
+  text-align:center;
+  background:#000;
+}
+video.bg{
+  position:fixed;
+  top:0;left:0;
+  width:100%;height:100%;
+  object-fit:cover;
+  z-index:-2;
+}
+.overlay{
+  position:fixed;
+  top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,0.55);
+  z-index:-1;
+}
+header{
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 25px;
+  background:rgba(0,0,0,0.4);
+  backdrop-filter:blur(5px);
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+button,.btn{
+  background:var(--accent);
+  color:#000;
+  border:none;
+  padding:8px 14px;
+  border-radius:6px;
+  cursor:pointer;
+  font-weight:600;
+  transition:0.3s;
+}
+button:hover,.btn:hover{transform:scale(1.05);opacity:.9;}
+nav a{
+  color:var(--text);
+  margin:0 10px;
+  text-decoration:none;
+  font-weight:bold;
+  transition:.3s;
+}
+nav a:hover{color:var(--accent);}
+h1.glow{
+  font-size:3em;
+  color:var(--accent);
+  text-shadow:0 0 25px var(--accent),0 0 40px var(--accent);
+  margin-top:60px;
+  animation:float 3s ease-in-out infinite alternate;
+  letter-spacing:1px;
+  font-family:'Minecraft',sans-serif;
+}
+@keyframes float{
+  from{transform:translateY(0);}
+  to{transform:translateY(-8px);}
+}
+p.desc{
+  font-family:'Minecraft',sans-serif;
+  color:#00ff00;
+  max-width:600px;
+  margin:15px auto 40px;
+  font-size:1.2em;
+  text-shadow:0 0 10px #00ff00;
+  line-height:1.6;
+}
+.plans{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:20px;
+  width:90%;
+  margin:0 auto 30px;
+}
+.plan{
+  background:rgba(255,255,255,0.1);
+  padding:20px;
+  border-radius:15px;
+  backdrop-filter:blur(6px);
+  transition:0.3s;
+  font-family:'Minecraft',sans-serif;
+  color:#00ff80;
+}
+.plan:hover{transform:translateY(-5px);box-shadow:0 0 15px var(--accent);}
+.plan.highlight{
+  border:2px solid var(--yellow);
+  color:var(--yellow);
+  box-shadow:0 0 25px var(--yellow);
+}
+.qr img{
+  width:180px;
+  border-radius:10px;
+  box-shadow:0 0 15px rgba(255,255,255,0.3);
+}
+.discord-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:#5865F2;
+  color:#fff;
+  padding:12px 22px;
+  border-radius:50px;
+  font-weight:600;
+  text-decoration:none;
+  transition:0.3s;
+}
+.discord-btn:hover{transform:scale(1.09);background:#4752C4;}
+.discord-logo{
+  width:25px;
+  height:25px;
+  background:url('https://cdn.worldvectorlogo.com/logos/discord-6.svg') center/contain no-repeat;
+}
+.popup{
+  display:none;
+  position:fixed;
+  top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,0.7);
+  justify-content:center;
+  align-items:center;
+  z-index:20;
+}
+.popup-content{
+  background:rgba(20,30,60,0.95);
+  padding:35px;
+  border-radius:15px;
+  width:320px;
+  text-align:center;
+  color:var(--text);
+  backdrop-filter:blur(10px);
+  box-shadow:0 0 25px var(--accent);
+  animation:pop 0.5s ease;
+}
+@keyframes pop{
+  from{transform:scale(0.8);opacity:0;}
+  to{transform:scale(1);opacity:1;}
+}
+.popup input{
+  width:90%;
+  padding:10px;
+  margin:8px 0;
+  border:none;
+  border-radius:8px;
+  background:rgba(255,255,255,0.1);
+  color:var(--text);
+  font-family:'Minecraft',sans-serif;
+}
+#message,#regMessage{color:#ff7a7a;font-weight:500; margin-top:6px;}
+.user-badge{
+  display:inline-flex;
+  gap:10px;
+  align-items:center;
+  color:var(--text);
+}
+.logout-btn{
+  background:transparent;
+  color:var(--text);
+  border:1px solid rgba(255,255,255,0.08);
+  padding:6px 10px;
+  border-radius:6px;
+  cursor:pointer;
+  transition:0.2s;
+}
+.logout-btn:hover{transform:scale(1.03);color:var(--accent)}
+</style>
+</head>
+<body>
+
+<video class="bg" autoplay muted loop playsinline poster="">
+  <!-- Keep your original source; fall back gracefully if it doesn't load -->
+  <source src="https://cdn.discordapp.com/attachments/1430506426639585300/1433373590975152128/From_KlickPin_CF__Pinterest___.mp4" type="video/mp4">
+  <!-- If the remote video URL fails to load in some environments, the page still works -->
+</video>
+<div class="overlay"></div>
+
+<header>
+  <div class="top-buttons" id="topButtons">
+    <button onclick="openPopup('loginPopup')">Login</button>
+    <button onclick="openPopup('registerPopup')">Register</button>
+  </div>
+  <nav>
+    <a href="#" onclick="showSection('home')">Home</a>
+    <a href="#" onclick="showSection('shop')">Shop</a>
+  </nav>
+</header>
+
+<section id="home">
+  <h1 class="glow">Props Nodes</h1>
+  <p class="desc">Props Nodes is a premium hosting platform for your Minecraft servers — affordable, fast, and reliable.</p>
+  <a href="https://discord.gg/RUeaAYufXg" target="_blank" class="discord-btn" rel="noopener">
+    <div class="discord-logo" aria-hidden="true"></div> Join our Discord
+  </a>
+</section>
+
+<section id="shop" style="display:none;">
+  <h2 style="font-family:'Minecraft',sans-serif;color:#00ff80;text-shadow:0 0 10px #00ff80;">Server Plans</h2>
+  <div class="plans">
+    <div class="plan"><h3>₹10</h3><p>4GB RAM Server</p></div>
+    <div class="plan"><h3>₹20</h3><p>6GB RAM Server</p></div>
+    <div class="plan"><h3>₹25</h3><p>8GB RAM Server</p></div>
+    <div class="plan"><h3>₹30</h3><p>10GB RAM Server</p></div>
+    <div class="plan"><h3>₹40</h3><p>15GB RAM (Permanent)</p></div>
+    <div class="plan highlight"><h3>Premium ₹90</h3><p>23GB + Custom Plugins + Pro Developer</p></div>
+  </div>
+  <div class="qr">
+    <h3 style="font-family:'Minecraft',sans-serif;">Scan to Pay</h3>
+    <img src="https://cdn.discordapp.com/attachments/1427615744656412754/1432763699491508344/InShot_20251024_145436071.jpg" alt="QR">
+  </div>
+</section>
+
+<!-- LOGIN -->
+<div class="popup" id="loginPopup" aria-hidden="true">
+  <div class="popup-content" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+    <h2 id="loginTitle" style="font-family:'Minecraft',sans-serif;">Login</h2>
+    <input id="loginEmail" type="text" placeholder="Gmail" autocomplete="username">
+    <input id="loginPass" type="password" placeholder="Password" autocomplete="current-password">
+    <p id="message"></p>
+    <button onclick="login()">Login</button><br><br>
+    <button onclick="closePopup('loginPopup')">Close</button>
+  </div>
+</div>
+
+<!-- REGISTER -->
+<div class="popup" id="registerPopup" aria-hidden="true">
+  <div class="popup-content" role="dialog" aria-modal="true" aria-labelledby="regTitle">
+    <h2 id="regTitle" style="font-family:'Minecraft',sans-serif;">Register</h2>
+    <input id="regEmail" type="text" placeholder="Gmail" autocomplete="email">
+    <input id="regPass" type="password" placeholder="Password (7–20 chars)" autocomplete="new-password">
+    <input id="regUser" type="text" placeholder="Username" autocomplete="name">
+    <p id="regMessage"></p>
+    <button onclick="register()">Register</button><br><br>
+    <button onclick="closePopup('registerPopup')">Close</button>
+  </div>
+</div>
+
+<script>
+/*
+  Fixes and improvements:
+  - Use document.getElementById(...) to reliably read inputs.
+  - Validate email format, password length, and username presence.
+  - Store users in localStorage keyed by email.
+  - Provide a simple login session stored in localStorage (currentUser).
+  - Update header when logged in, allow logout.
+  - Close popups when clicking outside the dialog.
+*/
+
+function openPopup(id){
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.display = 'flex';
+  el.setAttribute('aria-hidden', 'false');
+}
+function closePopup(id){
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.display = 'none';
+  el.setAttribute('aria-hidden', 'true');
+  // clear messages inside popup
+  const msg = el.querySelector('p');
+  if (msg) { msg.textContent = ''; msg.style.color = '#ff7a7a'; }
+}
+
+// switch sections
+function showSection(s){
+  document.getElementById('home').style.display = s==='home'?'block':'none';
+  document.getElementById('shop').style.display = s==='shop'?'block':'none';
+}
+
+// small email validator
+function isValidEmail(email){
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function register(){
+  const e = document.getElementById('regEmail').value.trim();
+  const p = document.getElementById('regPass').value;
+  const u = document.getElementById('regUser').value.trim();
+  const regMessage = document.getElementById('regMessage');
+
+  regMessage.style.color = '#ff7a7a';
+  if(!e || !p || !u){ regMessage.textContent = 'Please fill all fields.'; return; }
+  if(!isValidEmail(e)){ regMessage.textContent = 'Please enter a valid email.'; return; }
+  if(p.length < 7 || p.length > 20){ regMessage.textContent = 'Weak Pass — use 7–20 chars.'; return; }
+
+  const users = JSON.parse(localStorage.getItem('users') || '{}');
+  if(users[e]){ regMessage.textContent = 'Account exists. Please login.'; return; }
+
+  users[e] = { password: p, username: u };
+  localStorage.setItem('users', JSON.stringify(users));
+
+  regMessage.style.color = '#00ff80';
+  regMessage.textContent = 'Registered! You can login.';
+  // auto-close after a short delay
+  setTimeout(()=>{ closePopup('registerPopup'); }, 1200);
+}
+
+function login(){
+  const e = document.getElementById('loginEmail').value.trim();
+  const p = document.getElementById('loginPass').value;
+  const message = document.getElementById('message');
+
+  message.style.color = '#ff7a7a';
+  if(!e || !p){ message.textContent = 'Please enter email and password.'; return; }
+  if(!isValidEmail(e)){ message.textContent = 'Please enter a valid email.'; return; }
+
+  const users = JSON.parse(localStorage.getItem('users') || '{}');
+  if(!users[e]){ message.textContent = "This Account Doesn't Exist, Please register."; return; }
+  if(users[e].password !== p){ message.textContent = "Wrong credentials, Please enter right."; return; }
+
+  // success: set current user
+  localStorage.setItem('currentUser', JSON.stringify({ email: e, username: users[e].username }));
+  message.style.color = '#00ff80';
+  message.textContent = 'Login successful!';
+  updateHeaderForLoggedInUser();
+  setTimeout(()=>{ closePopup('loginPopup'); }, 600);
+}
+
+function logout(){
+  localStorage.removeItem('currentUser');
+  updateHeaderForLoggedOut();
+}
+
+function updateHeaderForLoggedInUser(){
+  const top = document.getElementById('topButtons');
+  const current = JSON.parse(localStorage.getItem('currentUser') || 'null');
+  if(!current){
+    updateHeaderForLoggedOut();
+    return;
+  }
+  top.innerHTML = `
+    <div class="user-badge" title="${current.email}">
+      <strong style="color:var(--accent);font-family:'Minecraft',sans-serif;">${escapeHtml(current.username)}</strong>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  `;
+}
+
+function updateHeaderForLoggedOut(){
+  const top = document.getElementById('topButtons');
+  top.innerHTML = `
+    <button onclick="openPopup('loginPopup')">Login</button>
+    <button onclick="openPopup('registerPopup')">Register</button>
+  `;
+}
+
+// small HTML escaper for display safety
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; });
+}
+
+// close popup when clicking outside content
+document.addEventListener('click', function(evt){
+  const popups = document.querySelectorAll('.popup');
+  popups.forEach(p => {
+    if(p.style.display !== 'flex') return;
+    const content = p.querySelector('.popup-content');
+    if(!content) return;
+    if(!content.contains(evt.target) && p === evt.target){
+      closePopup(p.id);
+    }
+  });
+});
+
+// Keyboard accessibility: Esc to close any open popup
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape'){
+    document.querySelectorAll('.popup').forEach(p => {
+      if(p.style.display === 'flex') closePopup(p.id);
+    });
+  }
+});
+
+// On load: set header based on session
+document.addEventListener('DOMContentLoaded', function(){
+  if(localStorage.getItem('currentUser')){
+    updateHeaderForLoggedInUser();
+  } else {
+    updateHeaderForLoggedOut();
+  }
+});
+</script>
+</body>
+</html>
